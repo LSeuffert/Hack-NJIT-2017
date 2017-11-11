@@ -7,6 +7,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
 import Graphics.Assets;
+import Objects.Player;
 
 public class Main implements Runnable{
 	
@@ -17,12 +18,20 @@ public class Main implements Runnable{
 	Assets asset;
 	private boolean isRunning = false;
 	private Thread thread;
+	
+	////player////
+	Player player;
 
 	public Main(String gameName, int Width, int Height){
 		this.Width=Width;
 		this.Height=Height;
 		display = new Display(gameName,Width,Height);
 		start();
+		init();
+	}
+	
+	public void init(){
+		player = new Player(this, 300,300,40,40,ID.Player);
 		//load assets///
 		asset = new Assets();
 		asset.loadgraphics();
@@ -87,8 +96,11 @@ public class Main implements Runnable{
 		g.setColor(Color.black);
 		g.fillRect(0, 0, Width, Height);
 		
-		BufferedImage player = asset.playerSpriteSheet;
-		g2d.drawImage(player, 0, 0, null);
+		//BufferedImage player = asset.playerSpriteSheet;
+		//g2d.drawImage(player, 0, 0, null);
+		
+		player.render(g);
+		
 		//////////////////////////////////
 
 		g.dispose();
