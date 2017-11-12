@@ -11,26 +11,21 @@ import Main.Handler;
 import Main.ID;
 import Main.Main;
 
-public class Player extends Object  {
-
+public class Player2 extends Object{
 	Main game;
 	Ak47 gun;
 	private Handler handler;
+	public int facing;
 	private double accx,accy;
 	private double gravity,maxDy;
 	private boolean falling,canJump;
-	int health = 100; 
-	
-	private Animation animRight;
 	private Animation animLeft;
-	private Animation landingDust;
-	
-	int released = 0;
-	int pressed = 1;
+	private Animation animRight;
+	int health = 100;
 	public boolean equipped = false;
 
 	
-	public Player(Main game, int x, int y, int width, int height, ID id, Handler handler) {
+	public Player2(Main game, int x, int y, int width, int height, ID id, Handler handler) {
 		super(game, x, y, width, height, id);
 		this.handler = handler;
 		this.game = game;
@@ -39,9 +34,8 @@ public class Player extends Object  {
 		maxDy = 10;
 		
 		//Animation
-		animLeft = new Animation(90,game.asset.player1SpritesFlipped);
-		animRight = new Animation(90, game.asset.player1Sprites);
-		landingDust = new Animation(100,game.asset.dustEffect);
+		animLeft = new Animation(90,game.asset.player2SpritesFlipped);
+		animRight = new Animation(90, game.asset.player2Sprites);
 	}
 
 	@Override
@@ -59,13 +53,20 @@ public class Player extends Object  {
 	@Override
 	public void render(Graphics g) {
 		Graphics2D g2d = (Graphics2D)g;
-
+		/*g2d.setColor(Color.white);
+		g2d.fill(getBounds());
+		g2d.setColor(Color.blue);
+		g2d.draw(getBounds());
+		g2d.setColor(Color.green);
+		g2d.draw(getBoundsTop());
+		g2d.setColor(Color.white);
+		g2d.draw(getBoundsBottom());
+		g2d.setColor(Color.yellow);
+		g2d.draw(getBoundsRight());*/
 		g2d.setColor(Color.green);
 		g2d.fill(new Rectangle((int)x,(int)y-20,health,10));
 		g2d.draw(new Rectangle((int)x,(int)y-20,100,10));
 		g2d.drawImage(getCurrAnimFrame(), (int)x, (int)y, width, height, null);
-		//g2d.drawImage(landingDust.getCurrentFrame(), (int)x+64, (int)y+32, 64, 64, null);
-
 	}
 
 	@Override
@@ -107,12 +108,12 @@ public class Player extends Object  {
 		y+=accy;
 		
 		///move right
-		if(handler.isRight()){
+		if(handler.isRight2()){
 			facing = 1;
 			velx += 1.5;
 		}
 		///move left
-		else if(handler.isLeft()){
+		else if(handler.isLeft2()){
 			facing = -1;
 			velx -= 1.5;
 		}
@@ -121,21 +122,21 @@ public class Player extends Object  {
 		}
 		
 		///jump
-		if(handler.isUp()){
+		if(handler.isUp2()){
 			jump(12,height*4);
 		}
 		
 	}
 
-	
-	
+	int released = 0;
+	int pressed = 1;
 	public void shoot(){
-		if(handler.isShoot1() && equipped){
+		if(handler.isShoot2() && equipped){
 			if(pressed == 1 && released == 1){
 				//decrease ammo
 				gun.ammo--;
 				handler.shake = true;
-				handler.addObject(new Bullet(game, (int)x+width/2, (int) ((int)y+height*.75), 16, 2, facing, ID.Bullet1,handler));
+				handler.addObject(new Bullet(game, (int)x+width/2, (int) ((int)y+height*.75), 16, 2, facing, ID.Bullet2,handler));
 			}
 			released = 0;
 		}
@@ -172,34 +173,30 @@ public class Player extends Object  {
 				if(getBoundsLeft().intersects(temp.getBounds()) && velx < 0){
 					x = temp.x + temp.width;
 				}
-				
 			}
-			
 			///fire damage
-			if(temp.id == ID.Bullet2){
+			if(temp.id == ID.Bullet1){
 				if(temp.getBounds().intersects(getBounds())){
-					if(temp.velx>0){
+					if(temp.velx>0)
 						x+=5;
-					}
 					else{
 						x-=5;
 					}
 					handler.removeObject(temp);
-					health-=10;
+					health-=10;	
 				}
 			}
 			///pick up gun
 			if(temp.id == ID.AK47){
 				gun = (Ak47)temp;
-					if(temp.getBounds().intersects(getBounds())){
-						if(handler.isDown()){
-							equipped = true;
-							gun.equipped = true;
-							gun.parent = ID.Player1;
-						}
+				if(temp.getBounds().intersects(getBounds())){
+					if(handler.isDown2()){
+						equipped = true;
+						gun.parent = ID.Player2;
 					}
+				}
 				///position the gun
-				if(gun.equipped){
+				if(equipped){
 					gun.x = x+facing * (width/2);
 					gun.y = y+(height/2);
 				}
@@ -240,5 +237,4 @@ public class Player extends Object  {
 		}
 		
 	}
-	
 }

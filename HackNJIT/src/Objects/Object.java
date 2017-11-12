@@ -9,13 +9,14 @@ import Main.Main;
 public abstract class Object {
 	
 	protected double x, y;
+	public int facing;
 	protected int width;
 	protected int height;
 	protected float velx = 0,vely = 0;
 	protected float accx = 0,accy = 0;
 	protected ID id;
-	protected final int XVELOCITY  = 2;
-	protected final int YVELOCITY  = 2;
+	protected final int XVELOCITY  = 5;
+	protected final int YVELOCITY  = 10;
 	
 	public Object(Main game,int x,int y, int width, int height, ID id){
 		this.x = x;
